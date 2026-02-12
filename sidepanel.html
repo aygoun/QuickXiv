@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuickXiv</title>
+  <link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <!-- ====== Onboarding: API Key Setup ====== -->
+  <div id="onboarding" class="screen hidden">
+    <div class="onboarding-container">
+      <div class="logo-area">
+        <img src="icons/icon128.png" alt="QuickXiv" class="logo" />
+        <h1>QuickXiv</h1>
+        <p class="tagline">AI-powered arXiv paper summaries</p>
+      </div>
+      <div class="key-form">
+        <label for="api-key-input">Hugging Face API Key</label>
+        <input
+          type="password"
+          id="api-key-input"
+          placeholder="hf_xxxxxxxxxxxxxxxxxxxx"
+          spellcheck="false"
+          autocomplete="off"
+        />
+        <p class="helper-text">
+          Get your free API key at
+          <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">
+            huggingface.co/settings/tokens
+          </a>
+        </p>
+        <button id="save-key-btn" class="btn-primary">Save &amp; Continue</button>
+        <p id="key-error" class="error-text hidden"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Main Summary View ====== -->
+  <div id="main" class="screen hidden">
+    <!-- Header -->
+    <header class="panel-header">
+      <div class="header-left">
+        <img src="icons/icon48.png" alt="" class="header-icon" />
+        <span class="header-title">QuickXiv</span>
+      </div>
+      <div class="header-actions">
+        <a href="https://github.com/armandblin/QuickXiv" target="_blank" rel="noopener" class="icon-btn" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+        <button id="usage-btn" class="icon-btn" title="API Usage">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20V10"/>
+            <path d="M18 20V4"/>
+            <path d="M6 20v-4"/>
+          </svg>
+        </button>
+        <button id="settings-btn" class="icon-btn" title="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Paper info -->
+    <div id="paper-info" class="paper-info hidden">
+      <h2 id="paper-title" class="paper-title"></h2>
+      <p id="paper-authors" class="paper-authors"></p>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loading" class="loading-container hidden">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Analyzing paper...</p>
+      <div class="skeleton-cards">
+        <div class="skeleton-card">
+          <div class="skeleton-line w80"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w60"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line w70"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w90"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line w60"></div>
+          <div class="skeleton-line w100"></div>
+          <div class="skeleton-line w75"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div id="error" class="error-container hidden">
+      <div class="error-icon">!</div>
+      <p id="error-message" class="error-msg"></p>
+      <button id="retry-btn" class="btn-secondary">Retry</button>
+    </div>
+
+    <!-- Ready state: paper detected, waiting for user to start -->
+    <div id="ready" class="ready-container hidden">
+      <div class="ready-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+      </div>
+      <p class="ready-text">Paper detected. Click below to generate a summary.</p>
+      <button id="summarize-btn" class="btn-primary summarize-btn">Summarize</button>
+    </div>
+
+    <!-- No paper state -->
+    <div id="no-paper" class="no-paper-container hidden">
+      <div class="empty-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+      </div>
+      <p>Navigate to an arXiv paper to get a summary.</p>
+    </div>
+
+    <!-- Summary sections -->
+    <div id="summary" class="summary-container hidden"></div>
+
+    <!-- Caution banner (always visible when main screen is shown) -->
+    <div class="caution-banner">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <span>Summaries are AI-generated and may contain inaccuracies. Always refer to the original paper.</span>
+    </div>
+  </div>
+
+  <!-- ====== Usage Modal ====== -->
+  <div id="usage-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>API Usage</h3>
+        <button id="close-usage-btn" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body usage-body">
+        <div class="usage-stats">
+          <div class="usage-stat-card">
+            <span class="usage-stat-value" id="usage-total-requests">0</span>
+            <span class="usage-stat-label">Requests</span>
+          </div>
+          <div class="usage-stat-card">
+            <span class="usage-stat-value" id="usage-total-tokens">0</span>
+            <span class="usage-stat-label">Tokens (est.)</span>
+          </div>
+          <div class="usage-stat-card">
+            <span class="usage-stat-value" id="usage-total-papers">0</span>
+            <span class="usage-stat-label">Papers</span>
+          </div>
+        </div>
+        <h4 class="usage-history-title">Recent requests</h4>
+        <div id="usage-history" class="usage-history"></div>
+        <button id="usage-clear-btn" class="btn-secondary usage-clear-btn">Clear history</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Settings Modal ====== -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Settings</h3>
+        <button id="close-modal-btn" class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="modal-api-key">Hugging Face API Key</label>
+        <input
+          type="password"
+          id="modal-api-key"
+          placeholder="hf_xxxxxxxxxxxxxxxxxxxx"
+          spellcheck="false"
+          autocomplete="off"
+        />
+        <div class="modal-actions">
+          <button id="modal-save-btn" class="btn-primary">Save</button>
+          <button id="modal-cancel-btn" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
