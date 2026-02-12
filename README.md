@@ -54,7 +54,7 @@ QuickXiv is a browser extension that detects when you're reading an arXiv paper 
 
 1. **Clone or download** this repository:
    ```bash
-   git clone https://github.com/armandblin/QuickXiv.git
+   git clone https://github.com/aygoun/QuickXiv
    ```
 2. Open your browser and navigate to the extensions page:
    - Chrome: `chrome://extensions/`
