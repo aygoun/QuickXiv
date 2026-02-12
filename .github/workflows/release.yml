@@ -10,8 +10,7 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write  # required to create releases and upload assets
 
     steps:
       - name: Checkout code
