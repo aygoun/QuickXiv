@@ -3,20 +3,23 @@ name: Build and Release Extension
 on:
   push:
     tags:
-      - 'v*'  # Triggers on version tags like v1.0.0, v1.1.0, etc.
-  workflow_dispatch:  # Allows manual triggering from GitHub Actions UI
+      - "v*" # Triggers on version tags like v1.0.0, v1.1.0, etc.
+  workflow_dispatch: # Allows manual triggering from GitHub Actions UI
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Make packaging script executable
         run: chmod +x package-extension.sh
-      
+
       - name: Package extension
         id: package
         run: |
@@ -25,14 +28,14 @@ jobs:
           VERSION=$(grep '"version"' manifest.json | cut -d'"' -f4)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "zip_file=QuickXiv-v${VERSION}.zip" >> $GITHUB_OUTPUT
-      
+
       - name: Upload extension artifact
         uses: actions/upload-artifact@v4
         with:
           name: extension-zip
           path: QuickXiv-v*.zip
           retention-days: 90
-      
+
       - name: Get tag name
         id: tag
         run: |
@@ -44,7 +47,7 @@ jobs:
             # For tag pushes, use the tag name
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -52,15 +55,15 @@ jobs:
           name: QuickXiv ${{ steps.tag.outputs.tag }}
           body: |
             ## QuickXiv ${{ steps.tag.outputs.tag }}
-            
+
             Chrome extension package ready for submission to Chrome Web Store.
-            
+
             ### Installation
             1. Download the ZIP file below
             2. Go to `chrome://extensions/`
             3. Enable "Developer mode"
             4. Click "Load unpacked" and select the extracted folder
-            
+
             ### Files
             - Extension ZIP: `QuickXiv-v${{ steps.package.outputs.version }}.zip`
           files: QuickXiv-v*.zip
