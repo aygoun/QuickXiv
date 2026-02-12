@@ -36,6 +36,10 @@ QuickXiv is a browser extension that detects when you're reading an arXiv paper 
 - **Key Results** — concrete findings, metrics, and comparisons
 - **Limitations & Future Work** — open questions and suggested extensions
 
+<p align="center">
+  <img src="assets/example.png" alt="QuickXiv example screenshot" width="500" />
+</p>
+
 ## Features
 
 - **One-click summaries** — detects arXiv papers automatically, summarizes on demand
@@ -45,12 +49,6 @@ QuickXiv is a browser extension that detects when you're reading an arXiv paper 
 - **Usage tracking** — monitor your API token usage with the built-in dashboard
 - **Universal Chromium support** — works in Chrome, Arc, Edge, Brave, and more
 - **Clean sidebar UI** — modern card-based design that sits beside the paper
-
-## Screenshots
-
-| Sidebar with summary | API key onboarding |
-|---|---|
-| *Summary cards with section references* | *First-time setup screen* |
 
 ## Installation
 
@@ -123,12 +121,12 @@ QuickXiv/
 
 ## Configuration
 
-| Setting | Default | Description |
-|---|---|---|
-| Model | `mistralai/Mistral-7B-Instruct-v0.2` | HF model used for summarization |
-| Max tokens | `1500` | Maximum output length |
-| Cache TTL | 7 days | How long summaries are cached locally |
-| Sidebar width | 420px | Width of the injected sidebar |
+| Setting       | Default                              | Description                           |
+| ------------- | ------------------------------------ | ------------------------------------- |
+| Model         | `mistralai/Mistral-7B-Instruct-v0.2` | HF model used for summarization       |
+| Max tokens    | `1500`                               | Maximum output length                 |
+| Cache TTL     | 7 days                               | How long summaries are cached locally |
+| Sidebar width | 420px                                | Width of the injected sidebar         |
 
 ## Tech Stack
 
