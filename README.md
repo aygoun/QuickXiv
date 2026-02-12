@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/armandblin/QuickXiv"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-armandblin%2FQuickXiv-181717?style=flat-square&logo=github" /></a>
+  <a href="https://github.com/aygoun/QuickXiv"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-aygoun%2FQuickXiv-181717?style=flat-square&logo=github" /></a>
   <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-418BCB?style=flat-square" />
   <img alt="Manifest V3" src="https://img.shields.io/badge/manifest-v3-418BCB?style=flat-square&logo=googlechrome&logoColor=white" />
   <img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=flat-square" />

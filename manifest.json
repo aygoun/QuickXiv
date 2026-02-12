@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "QuickXiv",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "Instantly summarize arXiv papers into clear, structured sections using AI.",
   "permissions": [
     "activeTab",
@@ -23,7 +23,9 @@
         "https://arxiv.org/abs/*",
         "https://arxiv.org/pdf/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -37,7 +39,9 @@
         "icons/icon48.png",
         "icons/icon128.png"
       ],
-      "matches": ["https://arxiv.org/*"]
+      "matches": [
+        "https://arxiv.org/*"
+      ]
     }
   ],
   "icons": {
